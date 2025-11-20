@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Absensi - Glass Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1: linear-gradient(135deg,#0f172a 0%, #0b2545 50%, #06306b 100%);
+    --glass: rgba(255,255,255,0.06);
+    --glass-2: rgba(255,255,255,0.08);
+    --accent: #60a5fa;
+    --accent-2: #7dd3fc;
+    --muted: rgba(255,255,255,0.75);
+    --card-radius: 14px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:"Poppins",system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;color:var(--muted)}
+  body{
+    background: var(--bg1);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:24px;
+    display:flex;
+    gap:24px;
+    justify-content:center;
+    align-items:flex-start;
+    min-height:100vh;
+  }
+
+  select {
+    background-color: #0b2347;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #3a4b6a;
+}
+
+/* Warna dropdown option */
+select option {
+    background-color: #0b2347; /* ganti warna putih */
+    color: white;
+}
+
+  /* Dashboard frame */
+  .dashboard {
+    width:100%;
+    max-width:1200px;
+    display:grid;
+    grid-template-columns: 240px 1fr;
+    gap:20px;
+  }
+
+  .rekapan-actions {
+    margin-top: 3px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-danger {
+    padding: 10px 20px;
+    background: rgba(255, 76, 76, 0.25);
+    border: 1px solid rgba(255, 76, 76, 0.5);
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    color: #ff4c4c;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.btn-danger:hover {
+    background: rgba(255, 76, 76, 0.35);
+    border-color: rgba(255, 76, 76, 0.8);
+}
+
+  /* SIDEBAR */
+  .sidebar{
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius: var(--card-radius);
+    padding:18px;
+    min-height:520px;
+    backdrop-filter: blur(8px) saturate(120%);
+  }
+  .brand{
+    display:flex;align-items:center;gap:12px;margin-bottom:20px;
+  }
+  .logo{
+    width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 18px rgba(96,165,250,0.15);
+    display:flex;align-items:center;justify-content:center;font-weight:700;color:#042c54;
+  }
+  h3{margin:0;font-size:16px;color:#e6f0ff}
+  .nav{margin-top:18px;display:flex;flex-direction:column;gap:8px}
+  .nav button{
+    text-align:left;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-weight:600;
+  }
+  .nav button.active{
+    background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02), 0 6px 14px rgba(2,6,23,0.35);
+    color:#fff;
+  }
+  .small{font-size:13px;color:rgba(255,255,255,0.7);margin-top:8px}
+
+  /* MAIN */
+  .main{
+    display:flex;flex-direction:column;gap:18px;
+  }
+
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+  }
+
+  .search{
+    display:flex;gap:8px;align-items:center;background:var(--glass);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
+    width:100%;max-width:640px;
+  }
+  .search input{flex:1;background:transparent;border:none;outline:none;color:var(--muted);font-weight:500}
+  .chip{
+    background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    padding:8px 10px;border-radius:12px;font-weight:600;color:black;border:1px solid rgba(255,255,255,0.03)
+  }
+
+  /* DASH CARDS */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.04);
+    padding:14px;border-radius:12px;backdrop-filter:blur(6px);
+  }
+  .card h4{margin:0;font-size:13px;color:#dff2ff;font-weight:600}
+  .card p{margin:8px 0 0;font-size:22px;color:white;font-weight:700}
+
+  /* CONTENT AREA */
+  .content{
+    display:flex;gap:16px;
+    align-items:flex-start;
+  }
+
+  .left-panel{
+    flex:1;
+    display:flex;flex-direction:column;gap:14px;
+  }
+
+  .right-panel{
+    width:360px;
+    min-width:220px;
+  }
+
+  /* Form / login card */
+  .card-form{
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.04);
+  }
+  .field{display:flex;flex-direction:column;margin-bottom:10px}
+  label{font-size:13px;color:#d9ecff;margin-bottom:6px}
+  input, select{
+    background: rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.04);
+    color:var(--muted);
+    padding:10px;border-radius:8px;font-weight:600;
+  }
+  .btn-primary{
+    background: linear-gradient(90deg,var(--accent),var(--accent-2));
+    border:none;padding:10px;border-radius:10px;color:#042c54;font-weight:700;cursor:pointer;width:100%;
+  }
+
+  /* Table card */
+  .table-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.04);
+  }
+  .table-toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+  .filters{display:flex;gap:8px;align-items:center}
+  .filters select, .filters input {padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:rgba(255,255,255,0.03);color:var(--muted)}
+  .table-wrapper{overflow:auto;max-height:360px;border-radius:8px}
+  table{width:100%;border-collapse:collapse;min-width:720px}
+  th,td{padding:10px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.03);color:#eaf7ff}
+  th{font-weight:700}
+  tr:nth-child(even){background: rgba(255,255,255,0.01)}
+
+  .actions{display:flex;gap:8px;justify-content:center}
+  .btn-small{padding:8px 10px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
+  .btn-danger{background:#ff6b6b;color:white}
+  .btn-export{background:#34d399;color:#00302b}
+
+  /* responsive */
+  @media (max-width:980px){
+    .dashboard{grid-template-columns: 1fr; padding-bottom:40px}
+    .sidebar{order:2;display:flex;flex-direction:row;gap:10px;overflow:auto;padding:12px}
+    .nav{flex-direction:row}
+    .main{order:1}
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .right-panel{width:100%}
+    .content{flex-direction:column}
+    table{min-width:640px}
+  }
+
+  @media (max-width:560px){
+    body{padding:12px}
+    .cards{grid-template-columns:1fr}
+    table{min-width:520px}
+  }
+
+  /* tiny helper */
+  .muted{color:rgba(255,255,255,0.7);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" aria-label="Sidebar">
+    <div class="brand">
+      <div class="logo">AB</div>
+      <div>
+        <h3>Absensi</h3>
+        <div class="small">XI RPL • 2025</div>
+      </div>
+    </div>
+
+    <nav class="nav" role="navigation">
+      <button class="active" data-view="overview">Overview</button>
+      <button data-view="absen">Rekapan</button>
+      <button data-view="siswa">Login Siswa</button>
+      <button data-view="settings">Pengaturan</button>
+    </nav>
+
+    <div style="margin-top:20px;">
+      <div class="small">Developed by: Keany Agatha Nadzif And Lukman Ardiamsyah Romadhon</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:0.9;margin-right:8px">
+          <path d="M21 21l-4.35-4.35" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="11" cy="11" r="5" stroke="white" stroke-width="1.6"></circle>
+        </svg>
+        <input id="globalSearch" placeholder="Cari nama / kelas..." />
+      </div>
+      <div class="chip" id="todayLabel">Tanggal: <span id="todayText"></span></div>
+    </div>
+
+    <!-- CARDS -->
+    <section class="cards">
+      <div class="card">
+        <h4>Total Siswa</h4>
+        <p id="statTotal">0</p>
+      </div>
+      <div class="card">
+        <h4>Hadir Hari Ini</h4>
+        <p id="statHadir">0</p>
+      </div>
+      <div class="card">
+        <h4>Izin / Sakit</h4>
+        <p id="statIzin">0</p>
+      </div>
+    </section>
+
+    <!-- CONTENT -->
+    <section class="content">
+      <div class="left-panel">
+        <!-- Rekapan Table -->
+        <div class="table-card" id="view-rekapan" style="display:none">
+          <div class="table-toolbar">
+            <div class="filters">
+              <select id="filterKelas"><option value="">Semua Kelas</option></select>
+              <select id="filterKet"><option value="">Semua Keterangan</option><option value="Masuk">Masuk</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option></select>
+             <button class="btn-small btn-export" onclick="exportCSV()">Export CSV</button>
+              <div class="rekapan-actions">
+              <button id="hapusSemua" class="btn-danger">Hapus Semua Data</button>` </div>
+            </div>
+            <div class="muted">Urut: <strong>Absen</strong></div>
+          </div>
+
+          <div class="table-wrapper">
+            <table id="rekapanTable">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nama</th>
+                  <th>Absen</th>
+                  <th>Kelas</th>
+                  <th>Keterangan</th>
+                  <th>Waktu</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Overview (simple recent) -->
+        <div class="table-card" id="view-overview">
+          <h4 style="margin:0 0 10px 0;color:#e8f6ff">Overview Hari Ini</h4>
+          <div class="muted" id="overviewText">Rekapan singkat akan muncul saat ada data.</div>
+        </div>
+
+        <!-- Settings -->
+        <div class="table-card" id="view-settings" style="display:none">
+          <h4 style="margin:0 0 12px 0;color:#e8f6ff">Pengaturan</h4>
+          <div class="muted">Fitur demo: data disimpan di localStorage. Untuk produksi, hubungkan ke server / database.</div>
+          <div style="margin-top:12px">
+            <button class="btn-small" id="btnResetAll" style="background:#ff7f50;color:white">Reset Semua Data</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL: Login Siswa -->
+      <aside class="right-panel">
+        <div class="card-form" id="view-siswa">
+          <h4 style="margin-top:0;color:#e8f6ff">Login Siswa</h4>
+
+          <div class="field">
+            <label>Username</label>
+            <input id="username" placeholder="username siswa" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label>Password</label>
+            <input id="password" type="password" placeholder="password">
+          </div>
+
+          <button class="btn-primary" id="btnLogin">Masuk</button>
+          <p id="loginMsg" class="muted" style="margin-top:8px"></p>
+
+          <hr style="border:none;border-top:1px dashed rgba(255,255,255,0.04);margin:12px 0">
+
+          <div id="absenArea" style="display:none">
+            <div class="muted" id="welcomeTxt"></div>
+            <div class="field">
+              <label>Keterangan</label>
+              <select id="keterangan">
+                <option value="">-- Pilih --</option>
+                <option value="Masuk">Masuk</option>
+                <option value="Izin">Izin</option>
+                <option value="Sakit">Sakit</option>
+              </select>
+            </div>
+            <button class="btn-primary" id="btnAbsen">Kirim Absensi</button>
+            <button class="btn-small" id="btnLogout" style="margin-top:8px;background:#ff6b6b;color:white">Logout</button>
+            <p id="absenMsg" class="muted"></p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ====== SAMPLE DATA SISWA ======
+   username lowercase, passwords simple for demo only.
+   (In production don't keep passwords in client-side.)
+*/
+const dataSiswa = [
+  { username: "aisyah", password: "0121", nama: "Aisyah Hari Afika", absen: 1, kelas: "XI RPL" }, 
+  { username: "andika", password: "0122", nama: "Andika Wahyu Utama", absen: 2, kelas: "XI RPL" }, 
+  { username: "anita", password: "0123", nama: "Anita", absen: 3, kelas: "XI RPL" }, 
+  { username: "aurel", password: "0124", nama: "Aurel Efflian Nadjwa Putri", absen: 4, kelas: "XI RPL" }, 
+  { username: "chaidar", password: "0125", nama: "Chaidarrur Rahman", absen: 5, kelas: "XI RPL" }, 
+  { username: "charisa", password: "0126", nama: "Charisa Martha Dewi", absen: 6, kelas: "XI RPL" }, 
+  { username: "dinda", password: "0127", nama: "Dinda Nur Lania Dewi", absen: 7, kelas: "XI RPL" }, 
+  { username: "astutik", password: "0128", nama: "Dwi Astutik", absen: 8, kelas: "XI RPL" }, 
+  { username: "elfiana", password: "0129", nama: "Elfiana Jovita Andini", absen: 9, kelas: "XI RPL" }, 
+  { username: "erdiva", password: "01210", nama: "Erdiva Berliana Putri", absen: 10, kelas: "XI RPL" }, 
+  { username: "keany", password: "01211", nama: "Keany Agatha Nadzif", absen: 11, kelas: "XI RPL" }, 
+  { username: "nisya", password: "01212", nama: "Khoirun Nisya", absen: 12, kelas: "XI RPL" }, 
+  { username: "khoirul", password: "01213", nama: "Khoirul Rahmandhani", absen: 13, kelas: "XI RPL" }, 
+  { username: "kirana", password: "01214", nama: "Kirana Dwi Rahmayani", absen: 14, kelas: "XI RPL" }, 
+  { username: "kusnul", password: "01215", nama: "Kusnul Khotimah", absen: 15, kelas: "XI RPL" }, 
+  { username: "lila", password: "01216", nama: "Lila Nur Latifah", absen: 16, kelas: "XI RPL" }, 
+  { username: "lukman", password: "01217", nama: "Lukman Ardiansyah Romadhoni", absen: 17, kelas: "XI RPL" }, 
+  { username: "machfudz", password: "01218", nama: "Machfudz Khasan", absen: 18, kelas: "XI RPL" }, 
+  { username: "maratus", password: "01219", nama: "Maratus Sholihah", absen: 19, kelas: "XI RPL" }, 
+  { username: "marsya", password: "01220", nama: "Marsya Niswa Azzahra", absen: 20, kelas: "XI RPL" },
+  { username: "rafael", password: "01221", nama: "Moh Rafael Rizky Abadi", absen: 21, kelas: "XI RPL" },
+  { username: "novita", password: "01222", nama: "Novita Anggraeni", absen: 22, kelas: "XI RPL" }, 
+  { username: "khasan", password: "01223", nama: "Nur Khasan", absen: 23, kelas: "XI RPL" }, 
+  { username: "kholifah", password: "01224", nama: "Nur Kholifah", absen:24 , kelas: "XI RPL" }, 
+  { username: "renatha", password: "01225", nama: "Renatha Putri", absen: 25, kelas: "XI RPL" }, 
+  { username: "rifa", password: "01226", nama: "Rifa Arinal Haq", absen: 26, kelas: "XI RPL" }, 
+  { username: "ririn", password: "01227", nama: "Ririn Ida Aulia", absen: 27, kelas: "XI RPL" }, 
+  { username: "risma", password: "01228", nama: "Risma Vinustika", absen: 28, kelas: "XI RPL" }, 
+  { username: "sasmita", password: "01229", nama: "Sasmita Adinda Putri", absen: 29, kelas: "XI RPL" }, 
+  { username: "shafa", password: "01230", nama: "Shafa Atika Zahra", absen:30, kelas: "XI RPL" }, 
+  { username: "solekha", password: "01231", nama: "Solekha", absen: 31, kelas: "XI RPL" }, 
+  { username: "silvia", password: "01232", nama: "Silvia Nur Rohmah", absen: 32, kelas: "XI RPL" }, 
+  { username: "supriadi", password: "01233", nama: "Supriadi", absen: 33, kelas: "XI RPL" }, 
+  { username: "tiara", password: "01234", nama: "Tiara Celcilya Putri", absen: 34, kelas: "XI RPL" }, 
+  { username: "wahidatul", password: "01235", nama: "Wahidatul Muharom", absen: 35, kelas: "XI RPL" },
+  // ... tambahkan sesuai kebutuhan sampai absen 35
+];
+
+/* ====== App State ====== */
+const adminPassword = "guru123"; // demo only
+let dataAbsensi = JSON.parse(localStorage.getItem("dataAbsensi")) || [];
+let siswaAktif = JSON.parse(localStorage.getItem("siswaAktif")) || null;
+
+/* ====== DOM refs ====== */
+const views = {
+  overview: document.getElementById("view-overview"),
+  rekapan: document.getElementById("view-rekapan"),
+  siswa: document.getElementById("view-siswa"),
+  settings: document.getElementById("view-settings")
+};
+const navButtons = document.querySelectorAll(".nav button");
+const rekapanTbody = document.querySelector("#rekapanTable tbody");
+const statTotal = document.getElementById("statTotal");
+const statHadir = document.getElementById("statHadir");
+const statIzin = document.getElementById("statIzin");
+const todayText = document.getElementById("todayText");
+const filterKelas = document.getElementById("filterKelas");
+const filterKet = document.getElementById("filterKet");
+const globalSearch = document.getElementById("globalSearch");
+
+/* ====== init ====== */
+document.addEventListener("DOMContentLoaded", () => {
+  // today label
+  todayText.textContent = new Date().toLocaleDateString("id-ID");
+  // populate kelas filter from dataSiswa
+  const kelasSet = new Set(dataSiswa.map(s => s.kelas));
+  kelasSet.forEach(k => {
+    const opt = document.createElement("option"); opt.value = k; opt.textContent = k;
+    filterKelas.appendChild(opt);
+  });
+  // initial view
+  showView("overview");
+  renderStats();
+  renderRekapan();
+});
+
+/* ====== NAVIGATION ====== */
+navButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    navButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    showView(btn.dataset.view);
+  });
+});
+
+function showView(name){
+  Object.values(views).forEach(v => v.style.display = "none");
+  if(name === "overview") views.overview.style.display = "block";
+  if(name === "absen") views.rekapan.style.display = "block";
+  if(name === "siswa") views.siswa.style.display = "block";
+  if(name === "settings") views.settings.style.display = "block";
+}
+
+/* ====== RENDER & HELPERS ====== */
+function renderStats(){
+  statTotal.textContent = dataSiswa.length;
+  const today = new Date().toISOString().split("T")[0];
+  const hadir = dataAbsensi.filter(a => a.keterangan === "Masuk" && a.tanggal === today).length;
+  const izinSakit = dataAbsensi.filter(a => (a.keterangan==="Izin"||a.keterangan==="Sakit") && a.tanggal === today).length;
+  statHadir.textContent = hadir;
+  statIzin.textContent = izinSakit;
+
+  const overviewText = document.getElementById("overviewText");
+  overviewText.textContent = `Total entri absensi (semua waktu): ${dataAbsensi.length}. Hadir hari ini: ${hadir}.`;
+}
+
+function getFilteredSortedData(){
+  let arr = [...dataAbsensi];
+  // apply kelas filter
+  const kelas = filterKelas.value;
+  if(kelas) arr = arr.filter(x=>x.kelas===kelas);
+  // apply ket filter
+  const ket = filterKet.value;
+  if(ket) arr = arr.filter(x=>x.keterangan===ket);
+  // apply search
+  const q = globalSearch.value.trim().toLowerCase();
+  if(q) arr = arr.filter(x => x.nama.toLowerCase().includes(q) || x.kelas.toLowerCase().includes(q));
+  // sort by absen numeric
+  arr.sort((a,b)=> (a.absen||0) - (b.absen||0));
+  return arr;
+}
+
+function renderRekapan(){
+  rekapanTbody.innerHTML = "";
+  const arr = getFilteredSortedData();
+  if(arr.length === 0){
+    rekapanTbody.innerHTML = `<tr><td colspan="6" class="muted">Belum ada data absensi.</td></tr>`;
+    return;
+  }
+  arr.forEach((item,idx)=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${idx+1}</td>
+      <td>${escapeHtml(item.nama)}</td>
+      <td>${escapeHtml(item.absen)}</td>
+      <td>${escapeHtml(item.kelas)}</td>
+      <td>${escapeHtml(item.keterangan)}</td>
+      <td>${escapeHtml(item.waktu)}</td>
+    `;
+    rekapanTbody.appendChild(tr);
+  });
+}
+
+/* ====== EVENTS: filter/search/export/reset ====== */
+filterKelas.addEventListener("change", renderRekapan);
+filterKet.addEventListener("change", renderRekapan);
+globalSearch.addEventListener("input", () => { renderRekapan(); });
+
+document.getElementById("btnResetAll").addEventListener("click", () => {
+  if(confirm("Reset semua data absensi di localStorage?")){
+    localStorage.removeItem("dataAbsensi");
+    dataAbsensi = [];
+    renderRekapan(); renderStats();
+    alert("Data direset.");
+  }
+});
+
+/* ====== LOGIN SISWA & ABSEN ====== */
+const btnLogin = document.getElementById("btnLogin");
+const btnAbsen = document.getElementById("btnAbsen");
+const btnLogout = document.getElementById("btnLogout");
+const loginMsg = document.getElementById("loginMsg");
+const absenArea = document.getElementById("absenArea");
+const welcomeTxt = document.getElementById("welcomeTxt");
+const absenMsg = document.getElementById("absenMsg");
+
+btnLogin.addEventListener("click", () => {
+  const u = document.getElementById("username").value.trim().toLowerCase();
+  const p = document.getElementById("password").value.trim();
+  if(!u || !p){ loginMsg.textContent = "Masukkan username & password."; return; }
+  const siswa = dataSiswa.find(s => s.username === u && s.password === p);
+  if(!siswa){ loginMsg.textContent = "Username atau password salah."; return; }
+  siswaAktif = siswa;
+  localStorage.setItem("siswaAktif", JSON.stringify(siswaAktif));
+  loginMsg.textContent = "";
+  showSiswaLogged();
+});
+
+function showSiswaLogged(){
+  if(!siswaAktif) return;
+  absenArea.style.display = "block";
+  welcomeTxt.textContent = `Halo, ${siswaAktif.nama} (Absen: ${siswaAktif.absen})`;
+}
+
+btnLogout.addEventListener("click", () => {
+  siswaAktif = null; localStorage.removeItem("siswaAktif");
+  absenArea.style.display = "none";
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+});
+
+/* Absen */
+btnAbsen.addEventListener("click", () => {
+  if(!siswaAktif){ alert("Silakan login terlebih dahulu."); return; }
+  const ket = document.getElementById("keterangan").value;
+  if(!ket){ absenMsg.textContent = "Pilih keterangan."; return; }
+  // cegah absen ganda per hari
+  const today = new Date().toISOString().split("T")[0];
+  let lastAbsen = JSON.parse(localStorage.getItem("lastAbsen")) || {};
+  if(lastAbsen[siswaAktif.username] === today){ alert("Kamu sudah absen hari ini."); return; }
+
+  const entri = {
+    username: siswaAktif.username,
+    nama: siswaAktif.nama,
+    absen: siswaAktif.absen,
+    kelas: siswaAktif.kelas,
+    keterangan: ket,
+    waktu: new Date().toLocaleString("id-ID"),
+    tanggal: today
+  };
+  dataAbsensi.push(entri);
+  localStorage.setItem("dataAbsensi", JSON.stringify(dataAbsensi));
+  lastAbsen[siswaAktif.username] = today;
+  localStorage.setItem("lastAbsen", JSON.stringify(lastAbsen));
+  absenMsg.textContent = "Absensi terkirim ✅";
+  renderRekapan(); renderStats();
+  setTimeout(()=> absenMsg.textContent = "", 2500);
+  btnLogout.click();
+});
+
+/* jika sudah login session */
+if(siswaAktif) showSiswaLogged();
+
+/* helper: download blob */
+function downloadBlob(content, filename, type){
+  const blob = new Blob([content], {type:type || "text/plain"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  a.remove(); URL.revokeObjectURL(url);
+}
+
+/* escape simple */
+function escapeHtml(s){ if(s==null) return ""; return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+const hapusSemua = document.getElementById("hapusSemua");
+
+hapusSemua.onclick = () => {
+    if (confirm("Yakin ingin menghapus semua data absensi?")) {
+        localStorage.removeItem("dataAbsensi");
+        localStorage.removeItem("lastAbsen");
+        dataAbsensi = [];
+         renderRekapan();  
+        renderStats(); 
+    }
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+    const savedU = localStorage.getItem("savedUsername");
+    const savedP = localStorage.getItem("savedPassword");
+
+    if (savedU) document.getElementById("username").value = savedU;
+    if (savedP) document.getElementById("password").value = savedP;
+});
+
+function exportCSV() {
+    let rows = document.querySelectorAll("table tr");
+    let csv = [];
+
+    rows.forEach((row) => {
+        let cols = row.querySelectorAll("td, th");
+        let rowData = [];
+
+        cols.forEach(col => {
+            let text = col.innerText.replace(/,/g, " "); // Hilangkan koma biar tidak pecah kolom
+            rowData.push('"' + text + '"'); // Bungkus dengan tanda kutip supaya rapi
+        });
+
+        csv.push(rowData.join(","));
+    });
+
+    let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+    let downloadLink = document.createElement("a");
+    downloadLink.download = "rekapan_absensi.csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.click();
+}
+
+
+
+
+</script>
+</body>
+</html>
